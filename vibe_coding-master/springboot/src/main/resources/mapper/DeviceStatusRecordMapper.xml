@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.coderstory.springboot.device.mapper.DeviceStatusRecordMapper">
+
+    <select id="selectOnlineRateTrend" resultType="java.util.Map">
+        SELECT
+            DATE_FORMAT(record_time, '%Y-%m-%d %H:00:00') AS time_slot,
+            COUNT(*) AS total_count,
+            SUM(CASE WHEN online_status = 1 THEN 1 ELSE 0 END) AS online_count,
+            ROUND(SUM(CASE WHEN online_status = 1 THEN 1 ELSE 0 END) * 100.0 / COUNT(*), 2) AS online_rate,
+            AVG(cpu_usage) AS avg_cpu,
+            AVG(memory_usage) AS avg_memory,
+            AVG(temperature) AS avg_temperature
+        FROM device_status_record
+        WHERE device_id = #{deviceId}
+          AND record_time BETWEEN #{startTime} AND #{endTime}
+        GROUP BY DATE_FORMAT(record_time, '%Y-%m-%d %H:00:00')
+        ORDER BY time_slot
+    </select>
+
+    <select id="selectDeviceStatusSummary" resultType="java.util.Map">
+        SELECT
+            d.id AS device_id,
+            d.device_no,
+            d.device_name,
+            d.online_status,
+            d.status AS run_status,
+            r.temperature,
+            r.cpu_usage,
+            r.memory_usage,
+            r.record_time AS last_record_time
+        FROM device_info d
+        LEFT JOIN device_status_record r ON r.id = (
+            SELECT id FROM device_status_record
+            WHERE device_id = d.id
+            ORDER BY record_time DESC
+            LIMIT 1
+        )
+        WHERE d.deleted = 0
+        ORDER BY d.id
+    </select>
+</mapper>
