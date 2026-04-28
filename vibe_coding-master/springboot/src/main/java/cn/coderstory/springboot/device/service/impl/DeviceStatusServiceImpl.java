@@ -107,12 +107,15 @@ public class DeviceStatusServiceImpl implements DeviceStatusService {
     public Map<String, Object> getAllDeviceStatusSnapshot() {
         Map<String, Object> snapshot = new HashMap<>();
         try {
-            Set<String> keys = stringRedisTemplate.keys(REDIS_DEVICE_STATUS_PREFIX + "*");
-            if (keys != null) {
-                for (String key : keys) {
-                    String deviceNo = key.substring(REDIS_DEVICE_STATUS_PREFIX.length());
-                    snapshot.put(deviceNo, getDeviceStatus(deviceNo));
-                }
+            org.springframework.data.redis.core.Cursor<String> cursor = stringRedisTemplate.scan(
+                    org.springframework.data.redis.core.ScanOptions.scanOptions()
+                            .match(REDIS_DEVICE_STATUS_PREFIX + "*")
+                            .count(100)
+                            .build());
+            while (cursor.hasNext()) {
+                String key = cursor.next();
+                String deviceNo = key.substring(REDIS_DEVICE_STATUS_PREFIX.length());
+                snapshot.put(deviceNo, getDeviceStatus(deviceNo));
             }
         } catch (Exception e) {
             log.error("Failed to get all device status snapshot", e);

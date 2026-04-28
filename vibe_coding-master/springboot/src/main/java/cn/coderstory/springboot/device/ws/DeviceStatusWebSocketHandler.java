@@ -8,6 +8,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.socket.*;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
+import java.util.ArrayList;
+
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -54,14 +56,20 @@ public class DeviceStatusWebSocketHandler extends TextWebSocketHandler {
             log.error("Failed to serialize broadcast data", e);
             return;
         }
-        sessions.values().removeIf(s -> !s.isOpen());
-        for (WebSocketSession session : sessions.values()) {
+        for (String sessionId : new ArrayList<>(sessions.keySet())) {
+            WebSocketSession session = sessions.get(sessionId);
+            if (session == null) {
+                continue;
+            }
+            if (!session.isOpen()) {
+                sessions.remove(sessionId);
+                continue;
+            }
             try {
-                if (session.isOpen()) {
-                    session.sendMessage(new TextMessage(json));
-                }
+                session.sendMessage(new TextMessage(json));
             } catch (Exception e) {
-                log.warn("Failed to send message to session {}", session.getId(), e);
+                log.warn("Failed to send message to session {}", sessionId, e);
+                sessions.remove(sessionId);
             }
         }
     }
