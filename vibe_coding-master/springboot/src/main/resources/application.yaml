@@ -133,7 +133,7 @@ server:
 # 安全配置
 # ===========================================
 security:
-  whitelist: /api/auth/**,/api/knowledge/files/**,/api/seckill/subscribe/**,/api/seckill/unsubscribe/**
+  whitelist: /api/auth/**,/api/knowledge/files/**,/api/seckill/subscribe/**,/api/seckill/unsubscribe/**,/swagger-ui/**,/v3/api-docs/**,/ws/**
   # 无需认证的接口路径（多个用逗号分隔）
 
 # ===========================================
@@ -151,3 +151,12 @@ logging:
   level:
     cn.coderstory: DEBUG           # 应用日志级别
     org.flywaydb: DEBUG           # Flyway 数据库迁移日志级别
+
+# ===========================================
+# SpringDoc OpenAPI / Swagger 配置
+# ===========================================
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+  api-docs:
+    path: /v3/api-docs

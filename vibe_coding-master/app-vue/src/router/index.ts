@@ -155,6 +155,60 @@ const routes: RouteRecordRaw[] = [
         name: 'MonitorDashboard',
         component: () => import('@/views/monitor/MonitorDashboard.vue'),
         meta: { title: '监控大盘', requiresAuth: true }
+      },
+      {
+        path: '/device',
+        name: 'DeviceList',
+        component: () => import('@/views/device/DeviceList.vue'),
+        meta: { title: '设备管理', requiresAuth: true }
+      },
+      {
+        path: '/device/add',
+        name: 'DeviceAdd',
+        component: () => import('@/views/device/DeviceForm.vue'),
+        meta: { title: '新增设备', requiresAuth: true }
+      },
+      {
+        path: '/device/edit/:id',
+        name: 'DeviceEdit',
+        component: () => import('@/views/device/DeviceForm.vue'),
+        meta: { title: '编辑设备', requiresAuth: true }
+      },
+      {
+        path: '/device/:id',
+        name: 'DeviceDetail',
+        component: () => import('@/views/device/DeviceDetail.vue'),
+        meta: { title: '设备详情', requiresAuth: true }
+      },
+      {
+        path: '/monitor/device',
+        name: 'DeviceMonitor',
+        component: () => import('@/views/device/DeviceMonitor.vue'),
+        meta: { title: '设备监控', requiresAuth: true }
+      },
+      {
+        path: '/fault',
+        name: 'FaultList',
+        component: () => import('@/views/fault/FaultList.vue'),
+        meta: { title: '故障管理', requiresAuth: true }
+      },
+      {
+        path: '/fault/add',
+        name: 'FaultAdd',
+        component: () => import('@/views/fault/FaultForm.vue'),
+        meta: { title: '上报故障', requiresAuth: true }
+      },
+      {
+        path: '/fault/:id',
+        name: 'FaultDetail',
+        component: () => import('@/views/fault/FaultDetail.vue'),
+        meta: { title: '故障详情', requiresAuth: true }
+      },
+      {
+        path: '/analysis',
+        name: 'AnalysisDashboard',
+        component: () => import('@/views/analysis/AnalysisDashboard.vue'),
+        meta: { title: '数据分析', requiresAuth: true }
       }
     ]
   },
